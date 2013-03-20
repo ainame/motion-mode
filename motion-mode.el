@@ -8,24 +8,15 @@
     (goto-char (point-min))
     (search-forward "Motion::Project::App" nil t)))
 
-(defun motion-mode-start ()
-  ;; TODO: implement some keybindings
-  )
-
-(defun motion-mode-stop ()
-  )
-
 (define-derived-mode motion-mode
   ruby-mode
   "RMo"
   "motion-mode is provide a iOS SDK's dictonary for auto-complete-mode"
-  (cond ((motion-mode)
-	 (motion-mode-start))
-	(t
-	 (motion-mode-stop))))
+  )
 
 (defun motion-upgrade-major-mode-if-motion-project ()
-  (if (motion-detect-motion-project)
+  (if (and (motion-detect-motion-project)
+	   (equal major-mode 'ruby-mode))
       (motion-mode)
     nil))
 	
