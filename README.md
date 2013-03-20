@@ -10,7 +10,7 @@ But, when you open noraml ruby's source file (*.rb), the emacs open it by ruby-m
 $ git clone https://github.com/ainame/motion-mode.git
 $ cd motion-mode
 $ find /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/System/Library/Frameworks -name "*.h" | xargs ruby make_dict.rb
-$ cp ./motion-mode ~/.emacs.d/path/to/auto-comlete/dict/
+$ cp ./motion-mode ~/.emacs.d/ac-dict
 $ cp ./motion-mode.el ~/.emacs.d/path/to/elisp/
 $ vi ~/.emacs.d/init.el # add following setting
 (require 'motion-mode)
