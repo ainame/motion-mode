@@ -18,4 +18,4 @@ $ vi ~/.emacs.d/init.el # add following setting
 (add-hook 'ruby-mode-hook 'motion-upgrade-major-mode-if-motion-project)
 ```
 ## SEE ALSO
-make_dict.rb cite from (roupam/yasobjc)[https://github.com/roupam/yasobjc].
+make_dict.rb cite from [roupam/yasobjc](https://github.com/roupam/yasobjc).
