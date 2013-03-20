@@ -10,7 +10,7 @@ $param_name = /#{$word}/
 $param = /(#{$function_name})#{$spaces}:#{$spaces}(#{$param_type})#{$spaces}(#{$param_name})/
 $function = /#{$spaces}[+-]#{$spaces}#{$return_type}#{$spaces}((#{$param}#{$spaces})+)/ 
 
-def extract_symbols(definition, dict)
+def extract_symbols(definition)
   result = []
 
   definition.scan($param).each do |param_match|
@@ -41,7 +41,7 @@ ARGV.each do|f|
 
     if function_match
       dict[basename] = 1
-      symbols = extract_symbols(function_match[2], dict)
+      symbols = extract_symbols(function_match[2])
       symbols.each do |symbol|
         dict[symbol] = 1
       end
