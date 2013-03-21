@@ -20,4 +20,7 @@
       (motion-mode)
     nil))
 	
+(defun motion-execute-rake ()
+  (shell-command "cd `$(git rev-parse --show-toplevel)`; rake"))
+
 (provide 'motion-mode)
