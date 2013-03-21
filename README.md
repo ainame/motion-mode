@@ -12,7 +12,7 @@ $ cd motion-mode
 $ find /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/System/Library/Frameworks -name "*.h" | xargs ruby make_dict.rb
 $ cp ./motion-mode ~/.emacs.d/ac-dict
 $ cp ./motion-mode.el ~/.emacs.d/path/to/elisp/
-$ vi ~/.emacs.d/init.el # add following setting
+$ emacs ~/.emacs.d/init.el # add following setting
 (require 'motion-mode)
 (add-to-list 'ac-modes 'motion-mode)
 (add-hook 'ruby-mode-hook 'motion-upgrade-major-mode-if-motion-project)
