@@ -29,6 +29,12 @@
       (motion-mode)
     nil))
 	
+
+(defun motion-execute-rake-command ()
+  (if (not current-prefix-arg)
+      "rake"
+    (read-string "Command: " "rake " nil "rake")))
+
 ;;;###autoload
 (defun motion-execute-rake ()
   (interactive)
