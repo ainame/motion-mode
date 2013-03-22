@@ -21,17 +21,13 @@
 (define-derived-mode motion-mode
   ruby-mode
   "RMo"
-  "motion-mode is provide a iOS SDK's dictonary for auto-complete-mode"
-  )
+  "motion-mode is provide a iOS SDK's dictonary for auto-complete-mode")
 
-(defun motion-upgrade-major-mode-if-motion-project ()
-  (if (and (motion-detect-motion-project)
-	   (equal major-mode 'ruby-mode))
 ;;;###autoload
+(defun motion-upgrade-major-mode-if-motion-project ()
   (interactive)
-      (motion-mode)
-    nil))
-	
+  (when (and (eq major-mode 'ruby-mode) (motion-project-p))
+    (motion-mode)))
 
 (defun motion-execute-rake-command ()
   (if (not current-prefix-arg)
