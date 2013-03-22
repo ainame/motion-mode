@@ -1,12 +1,21 @@
-(defun motion-get-rakefile-content ()
-  (shell-command-to-string
-   (format "cat `git ls-files $(git rev-parse --show-toplevel) | grep Rakefile | head -1`")))
 
-(defun motion-detect-motion-project ()
-  (with-temp-buffer
-    (insert (motion-get-rakefile-content))
-    (goto-char (point-min))
-    (search-forward "Motion::Project::App" nil t)))
+
+
+(defvar motion-execute-rake-buffer "*motion-rake*")
+
+(defun motion-project-root ()
+  (let ((root (locate-dominating-file default-directory "Rakefile")))
+    (when root
+      (expand-file-name root))))
+
+(defun motion-project-p ()
+  (let ((root (motion-project-root)))
+    (when root
+      (let ((rakefile (concat root "Rakefile")))
+        (when (file-exists-p rakefile)
+          (with-current-buffer (find-file-noselect rakefile)
+            (goto-char (point-min))
+            (search-forward "Motion::Project::App" nil t)))))))
 
 (define-derived-mode motion-mode
   ruby-mode
@@ -20,7 +29,18 @@
       (motion-mode)
     nil))
 	
+;;;###autoload
 (defun motion-execute-rake ()
-  (shell-command "cd `$(git rev-parse --show-toplevel)`; rake"))
+  (interactive)
+  (let ((root (motion-project-root)))
+    (if (not root)
+        (message "Here is not Ruby Motion Project")
+      (let ((default-directory root)
+            (buf (get-buffer-create motion-execute-rake-buffer))
+            (cmd (motion-execute-rake-command)))
+        (with-current-buffer buf
+          (erase-buffer)
+          (call-process-shell-command cmd nil t)
+          (pop-to-buffer buf))))))
 
 (provide 'motion-mode)
