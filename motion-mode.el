@@ -1,5 +1,16 @@
+;;; motion-mode.el --- major mode for RubyMotion enviroment
 
+;; Copyright (C) 2013 by Satoshi Namai
 
+;; Author: Satoshi Namai
+;; URL: https://github.com/ainame/motion-mode
+;; Version: @VERSION@
+
+;; @LICENSE@
+
+;;; Commentary:
+
+;;; Code:
 
 (defvar motion-execute-rake-buffer "*motion-rake*")
 
@@ -49,3 +60,4 @@
           (pop-to-buffer buf))))))
 
 (provide 'motion-mode)
+;;; motion-mode.el ends here
