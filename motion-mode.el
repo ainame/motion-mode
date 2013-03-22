@@ -17,6 +17,7 @@
             (goto-char (point-min))
             (search-forward "Motion::Project::App" nil t)))))))
 
+;;;###autoload
 (define-derived-mode motion-mode
   ruby-mode
   "RMo"
@@ -26,6 +27,8 @@
 (defun motion-upgrade-major-mode-if-motion-project ()
   (if (and (motion-detect-motion-project)
 	   (equal major-mode 'ruby-mode))
+;;;###autoload
+  (interactive)
       (motion-mode)
     nil))
 	
