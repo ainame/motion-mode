@@ -4,7 +4,7 @@
 
 ;; Author: Satoshi Namai
 ;; URL: https://github.com/ainame/motion-mode
-;; Version: 0.1
+;; Version: 0.2
 
 ;; Copyright (C) 2013 by Satoshi Namai <s.namai.2012 at gmail.com>
 ;; 
