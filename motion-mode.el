@@ -32,7 +32,7 @@
 
 ;;; Code:
 
-(defvar motion-execute-rake-buffer "*motion-rake*")
+(defvar motion-execute-rake-buffer "motion-rake")
 
 (defun motion-project-root ()
   (let ((root (locate-dominating-file default-directory "Rakefile")))
@@ -72,12 +72,8 @@
     (if (not root)
         (message "Here is not Ruby Motion Project")
       (let ((default-directory root)
-            (buf (get-buffer-create motion-execute-rake-buffer))
             (cmd (motion-execute-rake-command)))
-        (with-current-buffer buf
-          (erase-buffer)
-          (call-process-shell-command cmd nil t)
-          (pop-to-buffer buf))))))
+	(pop-to-buffer (make-comint motion-execute-rake-buffer cmd))))))
 
 (provide 'motion-mode)
 ;;; motion-mode.el ends here
