@@ -44,7 +44,8 @@
     (when root
       (let ((rakefile (concat root "Rakefile")))
         (when (file-exists-p rakefile)
-          (with-current-buffer (find-file-noselect rakefile)
+          (with-temp-buffer
+	    (insert-file-contents rakefile)
             (goto-char (point-min))
             (search-forward "Motion::Project::App" nil t)))))))
 
