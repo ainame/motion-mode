@@ -43,10 +43,15 @@
   (let ((root (motion-project-root)))
     (when root
       (let ((rakefile (concat root "Rakefile")))
-        (when (file-exists-p rakefile)
-          (with-current-buffer (find-file-noselect rakefile)
-            (goto-char (point-min))
-            (search-forward "Motion::Project::App" nil t)))))))
+        (unless (equal (get-file-buffer rakefile) (current-buffer))
+          (let ((fflag (get-file-buffer rakefile)))
+            (let ((rakefile-buf (find-file-noselect rakefile)))
+              (when (file-exists-p rakefile)
+                (with-current-buffer rakefile-buf
+                  (goto-char (point-min))
+                  (let ((result (search-forward "Motion::Project::App" nil t)))
+                    (unless fflag (kill-buffer rakefile-buf))
+                    (progn result)))))))))))
 
 ;;;###autoload
 (define-derived-mode motion-mode
