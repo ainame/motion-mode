@@ -32,6 +32,11 @@
 
 ;;; Code:
 
+(defcustom motion-flymake t
+  "motion-flymake variable is the flag which whether your emacs open rubymotion-source with flymake-mode or don't"
+  :type 'boolean
+  :group 'motion-mode)
+
 (defvar motion-execute-rake-buffer "motion-rake")
 
 (defun motion-project-root ()
@@ -53,7 +58,10 @@
 (define-derived-mode motion-mode
   ruby-mode
   "RMo"
-  "motion-mode is provide a iOS SDK's dictonary for auto-complete-mode")
+  "motion-mode is provide a iOS SDK's dictonary for auto-complete-mode"
+  (progn
+    (when (eq motion-flymake t)
+      (motion-flymake-init))))
 
 ;;;###autoload
 (defun motion-upgrade-major-mode-if-motion-project ()
@@ -75,6 +83,35 @@
       (let ((default-directory root)
             (cmd (motion-execute-rake-command)))
 	(pop-to-buffer (make-comint motion-execute-rake-buffer cmd))))))
+
+(defun motion-flymake-init ()
+  (progn
+    (require 'flymake-easy)
+    (require 'flymake-cursor)
+
+    (defconst flymake-motion-err-line-patterns
+      '(("^\\(.*\.rb\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3)))
+
+    (defvar flymake-motion-executable "macruby"
+      "The macruby executable to use for syntax checking.")
+
+    ;; Invoke rubymotion with '-c' to get syntax checking
+    (defun flymake-motion-command (filename)
+      "Construct a command that flymake can use to check ruby-motion source."
+      (list flymake-motion-executable "-w" "-c" filename))
+    
+    (defun flymake-motion-load ()
+      "Configure flymake mode to check the current buffer's macruby syntax."
+      (interactive)
+      (flymake-easy-load 'flymake-motion-command
+			 flymake-motion-err-line-patterns
+			 'tempdir
+			 "rb"))
+    (custom-set-variables
+     '(help-at-pt-timer-delay 0.3)
+     '(help-at-pt-display-when-idle '(flymake-overlay)))
+    (flymake-motion-load)
+    ))
 
 (provide 'motion-mode)
 ;;; motion-mode.el ends here
