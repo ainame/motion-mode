@@ -114,5 +114,11 @@
     (flymake-motion-load)
     ))
 
+(defun motion-dash-at-point ()
+  (interactive)
+  (let ((keyword (thing-at-point 'word)))
+    (princ keyword)
+    (shell-command (format "open dash://rubymotion:%s" keyword))))
+
 (provide 'motion-mode)
 ;;; motion-mode.el ends here
