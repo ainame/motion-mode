@@ -165,10 +165,10 @@ S
 
   describe "#tidy_up" do
     it 'tidy args' do
-      source   = """UITabBarItem.alloc.initWithTabBarSystemItem(UITabBarSystemItemBookmarks,tag:0)"""
-      expected = """UITabBarItem.alloc.initWithTabBarSystemItem(UITabBarSystemItemBookmarks, tag:0)"""
+      source   = "UITabBarItem.alloc.initWithTabBarSystemItem(UITabBarSystemItemBookmarks,tag:0)"
+      expected = "UITabBarItem.alloc.initWithTabBarSystemItem(UITabBarSystemItemBookmarks, tag:0)"
       c = Motion::CodeConverter.new(source)
-      c.tidy_up().s.should eq(expected)
+      c.tidy_up.s.should eq(expected)
     end
   end
 
