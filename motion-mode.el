@@ -39,6 +39,8 @@
   :group 'motion-mode)
 
 (defvar motion-execute-rake-buffer "motion-rake")
+(defvar motion-convert-code-command
+  (format "ruby %s" (concat (file-name-directory load-file-name) "bin/code_converter")))
 
 (defun motion-project-root ()
   (let ((root (locate-dominating-file default-directory "Rakefile")))
@@ -119,6 +121,10 @@
   (let ((keyword (thing-at-point 'word)))
     (princ keyword)
     (shell-command (format "open dash://rubymotion:%s" keyword))))
+
+(defun motion-convert-code-from-objc-to-rubymotion (start end)
+  (interactive (list (region-beginning) (region-end)))
+  (shell-command-on-region start end motion-converter-code-command nil t))
 
 (provide 'motion-mode)
 ;;; motion-mode.el ends here
