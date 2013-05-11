@@ -117,12 +117,16 @@
     ))
 
 (defun motion-dash-at-point ()
+  "This function open document by Dash.app."
   (interactive)
   (let ((keyword (thing-at-point 'word)))
     (princ keyword)
     (shell-command (format "open dash://rubymotion:%s" keyword))))
 
 (defun motion-convert-code-region (start end)
+  "convert code from Objective-C to RubyMotion.
+This is inspired from https://github.com/kyamaguchi/SublimeObjC2RubyMotion.
+"
   (interactive (list (region-beginning) (region-end)))
   (shell-command-on-region start end motion-converter-code-command nil t))
 
