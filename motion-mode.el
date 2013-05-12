@@ -139,7 +139,7 @@
 This is inspired from https://github.com/kyamaguchi/SublimeObjC2RubyMotion.
 "
   (interactive (list (region-beginning) (region-end)))
-  (shell-command-on-region start end motion-converter-code-command nil t))
+  (shell-command-on-region start end motion-convert-code-command nil t))
 
 (provide 'motion-mode)
 ;;; motion-mode.el ends here
