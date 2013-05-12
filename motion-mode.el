@@ -67,7 +67,7 @@
       (motion-flymake-init))))
 
 ;;;###autoload
-(defun motion-upgrade-major-mode-if-motion-project ()
+(defun motion-recognize-project ()
   (interactive)
   (when (and (eq major-mode 'ruby-mode) (motion-project-p))
     (motion-mode)))
