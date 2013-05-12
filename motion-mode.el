@@ -72,10 +72,20 @@
   (when (and (eq major-mode 'ruby-mode) (motion-project-p))
     (motion-mode)))
 
+(defun motion-get-rake-sub-command ()
+  (if current-prefix-arg
+      (read-string "Command: rake ")))
+
 (defun motion-execute-rake-command ()
-  (if (not current-prefix-arg)
-      "rake"
-    (read-string "Command: " "rake " nil "rake")))
+  (let ((sub-command (motion-get-rake-sub-command))
+	(buf (get-buffer-create (concat "*" motion-execute-rake-buffer "*"))))
+    (if (equal sub-command nil)
+	(progn
+	  (message "rake")
+	  (pop-to-buffer (make-comint motion-execute-rake-buffer "rake")))
+      (progn
+	(message (concat  "rake " sub-command))
+	(pop-to-buffer (make-comint motion-execute-rake-buffer "rake" nil sub-command))))))
 
 ;;;###autoload
 (defun motion-execute-rake ()
@@ -83,9 +93,8 @@
   (let ((root (motion-project-root)))
     (if (not root)
         (message "Here is not Ruby Motion Project")
-      (let ((default-directory root)
-            (cmd (motion-execute-rake-command)))
-	(pop-to-buffer (make-comint motion-execute-rake-buffer cmd))))))
+      (let ((default-directory root))
+	(motion-execute-rake-command)))))
 
 (defun motion-flymake-init ()
   (progn
