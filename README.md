@@ -1,5 +1,5 @@
 # motion-mode
-## DESCRIPTION
+## Description
 
 The motion-mode provide some convinience features when you write code in RubyMotion.
 The features is following this:
@@ -24,7 +24,7 @@ The features is following this:
 The motion-mode provides some convinience commands(motion-execute-rake, motion-dash-at-point, etc...),
 but the motion-mode dosen't provide key-bindings. You can setting key-bindings as you like.
 
-## USAGE
+## Usage
 ```sh
 $ cd ~/.emacs.d/elisp
 $ git clone https://github.com/ainame/motion-mode.git
@@ -35,13 +35,34 @@ $ emacs ~/.emacs.d/init.el # add following setting
 (add-to-list 'load-path "~/.emacs.d/elisp/motion-mode")
 (require 'motion-mode)
 ;; following adding of hook is very important.
-(add-hook 'ruby-mode-hook 'motion-upgrade-major-mode-if-motion-project)
+(add-hook 'ruby-mode-hook 'motion-recognize-project)
 (add-to-list 'ac-modes 'motion-mode)
 (add-to-list 'ac-sources 'ac-source-dictionary)
 ;; set keybindings as you like
 (define-key motion-mode-map (kbd "C-c C-c") 'motion-execute-rake)
 (define-key motion-mode-map (kbd "C-c C-d") 'motion-dash-at-point)
 ```
-## SEE ALSO
+## Commands
+You can set key binding of following commands. The motion-mode dosen't provide default key bindings.
+
+* motion-execute-rake
+  * Execution of rake tasks in Emacs
+* motion-dash-at-point
+  * Document search by Dash.app
+* motion-convert-code-region
+  * Code converter to convert a part of code from Objective-C to Ruby style sentence
+
+### Setting Example
+```elisp
+(define-key motion-mode-map (kbd "C-c C-c") 'motion-execute-rake)
+(define-key motion-mode-map (kbd "C-c C-d") 'motion-dash-at-point)
+(define-key motion-mode-map (kbd "C-c C-p") 'motion-convert-code-region)
+```
+
+## Variable
+* motion-flymake (default is t)
+  * motion-flymake variable is the flag which whether your emacs open rubymotion-source with flymake-mode or don't.
+
+## See Also
 * make_dict.rb cite from [roupam/yasobjc](https://github.com/roupam/yasobjc).
-* code_conveter cite from [kyamaguchi/SublimeObjC2RubyMotion](https://github.com/kyamaguchi/SublimeObjC2RubyMotion)
+* code_conveter.rb cite from [kyamaguchi/SublimeObjC2RubyMotion](https://github.com/kyamaguchi/SublimeObjC2RubyMotion)
