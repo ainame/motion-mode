@@ -85,7 +85,7 @@ module Motion
     end
 
     def convert_blocks
-      @s.gsub!(/\^\s*(\([^)]+\))?\s*{([^}]+)}/) do |match|
+      @s.gsub!(/\^\s*(\([^\)]+\))?\s*\{([^\}]+)\}/) do |match|
         self.class.convert_block_with_args(Regexp.last_match)
       end
       self
@@ -131,9 +131,9 @@ module Motion
       # convert arguments separated by ','
       @s.gsub!(/,([a-zA-Z_0-9]+):/, ', \1:')
       # convert block
-      @s.gsub!(/:->{([^}]+)}/, ': -> {\1}')
+      @s.gsub!(/:->\{([^\}]+)\}/, ': -> {\1}')
       # convert block with one args
-      @s.gsub!(/:->([a-zA-Z_0-9]+){([^}]+)}/, ': -> \1 {\2}')
+      @s.gsub!(/:->([a-zA-Z_0-9]+)\{([^\}]+)\}/, ': -> \1 {\2}')
       self
     end
 
