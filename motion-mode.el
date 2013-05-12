@@ -40,7 +40,7 @@
 
 (defvar motion-execute-rake-buffer "motion-rake")
 (defvar motion-convert-code-command
-  (format "ruby %s" (concat (file-name-directory load-file-name) "bin/code_converter")))
+  (format "ruby %s" (concat (file-name-directory load-file-name) "bin/code_converter.rb")))
 
 (defun motion-project-root ()
   (let ((root (locate-dominating-file default-directory "Rakefile")))
@@ -116,6 +116,7 @@
     (flymake-motion-load)
     ))
 
+;;;###autoload
 (defun motion-dash-at-point ()
   "This function open document by Dash.app."
   (interactive)
@@ -123,6 +124,7 @@
     (princ keyword)
     (shell-command (format "open dash://rubymotion:%s" keyword))))
 
+;;;###autoload
 (defun motion-convert-code-region (start end)
   "convert code from Objective-C to RubyMotion.
 This is inspired from https://github.com/kyamaguchi/SublimeObjC2RubyMotion.
