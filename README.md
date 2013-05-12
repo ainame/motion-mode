@@ -26,12 +26,13 @@ but the motion-mode dosen't provide key-bindings. You can setting key-bindings a
 
 ## USAGE
 ```sh
+$ cd ~/.emacs.d/elisp
 $ git clone https://github.com/ainame/motion-mode.git
 $ cd motion-mode
 $ find /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/System/Library/Frameworks -name "*.h" | xargs ruby make_dict.rb
 $ cp ./motion-mode ~/.emacs.d/ac-dict
-$ cp ./motion-mode.el ~/.emacs.d/path/to/elisp/
 $ emacs ~/.emacs.d/init.el # add following setting
+(add-to-list 'load-path "~/.emacs.d/elisp/motion-mode")
 (require 'motion-mode)
 (add-hook 'ruby-mode-hook 'motion-upgrade-major-mode-if-motion-project)
 (add-to-list 'ac-modes 'motion-mode)
