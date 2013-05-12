@@ -104,7 +104,7 @@
     (defconst flymake-motion-err-line-patterns
       '(("^\\(.*\.rb\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3)))
 
-    (defvar flymake-motion-executable "macruby"
+    (defvar flymake-motion-executable "/Library/RubyMotion/bin/ruby"
       "The macruby executable to use for syntax checking.")
 
     ;; Invoke rubymotion with '-c' to get syntax checking
