@@ -76,16 +76,24 @@
   (if current-prefix-arg
       (read-string "Command: rake ")))
 
+(defun motion-construct-rake-command (bundler task)
+  (cond ((and bundler task) `("bundle" nil "exec" "rake" ,task))
+        (bundler `("bundle" nil "exec" "rake"))
+        (task `("rake" nil ,task))
+        (t `("rake"))))
+
+(defsubst motion-bundler-p ()
+  ;; default-directory should be top directory of project.
+  (file-directory-p (concat default-directory ".bundle/")))
+
 (defun motion-execute-rake-command ()
-  (let ((sub-command (motion-get-rake-sub-command))
-	(buf (get-buffer-create (concat "*" motion-execute-rake-buffer "*"))))
-    (if (equal sub-command nil)
-	(progn
-	  (message "rake")
-	  (pop-to-buffer (make-comint motion-execute-rake-buffer "rake")))
-      (progn
-	(message (concat  "rake " sub-command))
-	(pop-to-buffer (make-comint motion-execute-rake-buffer "rake" nil sub-command))))))
+  (let* ((sub-command (motion-get-rake-sub-command))
+         (buf (get-buffer-create (concat "*" motion-execute-rake-buffer "*")))
+         (use-bundler (motion-bundler-p))
+         (params (motion-construct-rake-command use-bundler sub-command)))
+    (message "%s" (mapconcat (lambda (p) (if p (concat p " ") "")) params ""))
+    (apply 'make-comint motion-execute-rake-buffer params)
+    (pop-to-buffer buf)))
 
 ;;;###autoload
 (defun motion-execute-rake ()
