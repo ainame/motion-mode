@@ -24,6 +24,18 @@ The features is following this:
 The motion-mode provides some convinience commands(motion-execute-rake, motion-dash-at-point, etc...),
 but the motion-mode dosen't provide key-bindings. You can setting key-bindings as you like.
 
+## Install
+
+write following code in your init.el
+
+```emacs
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(package-initialize)
+```
+
+and then "M-x package-install".
+
 ## Usage
 ```sh
 $ cd ~/.emacs.d/elisp
