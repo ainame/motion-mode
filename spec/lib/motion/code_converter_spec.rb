@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'spec_helper'
 
 describe Motion::CodeConverter do
@@ -202,4 +203,25 @@ S
 
   end
 
+  context "input utf-8 strings" do
+    describe "#result" do
+      it 'should valid convert string' do
+        source   = 'NSLog(@"あああ")'
+        expected = 'NSLog("あああ")'
+        c = Motion::CodeConverter.new(source)
+        c.result.should eq(expected)
+      end
+    end
+  end
+
+  context "input euc-jp strings" do
+    describe "#result" do
+      it 'should invalid convert string' do
+        source   = 'NSLog(@"あああ")'.encode('euc-jp')
+        expected = 'NSLog("あああ")'
+        c = Motion::CodeConverter.new(source)
+        c.result.should eq(expected)
+      end
+    end
+  end
 end
