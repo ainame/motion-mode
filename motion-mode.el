@@ -84,7 +84,7 @@
 
 (defsubst motion-bundler-p ()
   ;; default-directory should be top directory of project.
-  (file-directory-p (concat default-directory ".bundle/")))
+  (file-exists-p (concat default-directory "Gemfile.lock")))
 
 (defun motion-execute-rake-command ()
   (let* ((sub-command (motion-get-rake-sub-command))
