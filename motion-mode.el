@@ -90,7 +90,7 @@
   (if current-prefix-arg
       (let ((tasks (motion-get-rake-tasks use-bundler)))
         (completing-read "rake task: " tasks
-                         nil nil nil motion-get-rake-task-history))))
+                         nil nil nil 'motion-get-rake-task-history))))
 
 (defun motion-construct-rake-command (bundler task)
   (cond ((and bundler task) `("bundle" nil "exec" "rake" ,task))
