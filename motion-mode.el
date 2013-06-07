@@ -41,6 +41,7 @@
 (defvar motion-execute-rake-buffer "motion-rake")
 (defvar motion-convert-code-command
   (format "ruby %s" (concat (file-name-directory load-file-name) "bin/code_converter.rb")))
+(defvar motion-get-rake-task-history nil)
 
 (defun motion-project-root ()
   (let ((root (locate-dominating-file default-directory "Rakefile")))
@@ -72,9 +73,24 @@
   (when (and (eq major-mode 'ruby-mode) (motion-project-p))
     (motion-mode)))
 
-(defun motion-get-rake-sub-command ()
+(defun motion-get-rake-tasks (use-bundler)
+  (with-temp-buffer
+    (let* ((rake (if use-bundler "bundle exec rake" "rake"))
+           (cmd (format "%s --tasks" rake))
+           (ret (call-process-shell-command cmd nil t)))
+      (unless (zerop ret)
+        (error "Failed: %s. Please check Rakefile" cmd))
+      (goto-char (point-min))
+      (let ((tasks nil))
+        (while (re-search-forward "^rake \\(\\S-+\\)" nil t)
+          (push (match-string 1) tasks))
+        (reverse tasks)))))
+
+(defun motion-get-rake-sub-command (use-bundler)
   (if current-prefix-arg
-      (read-string "Command: rake ")))
+      (let ((tasks (motion-get-rake-tasks use-bundler)))
+        (completing-read "rake task: " tasks
+                         nil nil nil motion-get-rake-task-history))))
 
 (defun motion-construct-rake-command (bundler task)
   (cond ((and bundler task) `("bundle" nil "exec" "rake" ,task))
@@ -87,9 +103,9 @@
   (file-exists-p (concat default-directory "Gemfile.lock")))
 
 (defun motion-execute-rake-command ()
-  (let* ((sub-command (motion-get-rake-sub-command))
+  (let* ((use-bundler (motion-bundler-p))
          (buf (get-buffer-create (concat "*" motion-execute-rake-buffer "*")))
-         (use-bundler (motion-bundler-p))
+         (sub-command (motion-get-rake-sub-command use-bundler))
          (params (motion-construct-rake-command use-bundler sub-command)))
     (message "%s" (mapconcat (lambda (p) (if p (concat p " ") "")) params ""))
     (apply 'make-comint motion-execute-rake-buffer params)
