@@ -42,6 +42,7 @@
 (defvar motion-convert-code-command
   (format "ruby %s" (concat (file-name-directory load-file-name) "bin/code_converter.rb")))
 (defvar motion-get-rake-task-history nil)
+(defvar motion-rake-task-list-cache nil)
 
 (defun motion-project-root ()
   (let ((root (locate-dominating-file default-directory "Rakefile")))
@@ -64,6 +65,8 @@
   "RMo"
   "motion-mode is provide a iOS SDK's dictonary for auto-complete-mode"
   (progn
+    ;; asynchronous caching rake tasks
+    (motion-get-rake-tasks (motion-bundler-p))
     (when (eq motion-flymake t)
       (motion-flymake-init))))
 
@@ -74,9 +77,16 @@
     (motion-mode)))
 
 (defun motion-get-rake-tasks (use-bundler)
+  (if (equal motion-rake-task-list-cache nil)
+      (progn
+	(setq motion-rake-task-list-cache (motion-get-rake-tasks-async use-bundler))
+	motion-rake-task-list-cache)
+    motion-rake-task-list-cache))
+
+(defun motion-get-rake-tasks-async (use-bundler)
   (with-temp-buffer
     (let* ((rake (if use-bundler "bundle exec rake" "rake"))
-           (cmd (format "%s --tasks" rake))
+           (cmd (format "%s --tasks&" rake))
            (ret (call-process-shell-command cmd nil t)))
       (unless (zerop ret)
         (error "Failed: %s. Please check Rakefile" cmd))
