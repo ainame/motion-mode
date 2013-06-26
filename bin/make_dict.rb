@@ -1,5 +1,10 @@
-require 'active_support/core_ext/string'
- 
+begin
+  require 'active_support/core_ext/string'
+rescue LoadError
+  puts 'missing activesupport. please `gem install activesupport`'
+  exit 1
+end
+
 $spaces = /[\t ]*/
 $word = /[a-zA-Z0-9][_a-zA-Z0-9]*/
 $type = /\((#{$spaces}#{$word}){1,3}#{$spaces}\**#{$spaces}\)/
