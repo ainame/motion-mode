@@ -121,10 +121,10 @@
                          nil nil nil 'motion-get-rake-task-history))))
 
 (defun motion-construct-rake-command (bundler task)
-  (cond ((and bundler task) `("bundle" nil "exec" "rake" ,task))
-        (bundler `("bundle" nil "exec" "rake"))
-        (task `("rake" nil ,task))
-        (t `("rake"))))
+  (cond ((and bundler task) `("bundle" nil "exec" "rake" ,task "--suppress-backtrace" ".*"))
+        (bundler `("bundle" nil "exec" "rake" "--suppress-backtrace" ".*"))
+        (task `("rake" nil ,task "--suppress-backtrace" ".*"))
+        (t `("rake" nil "--suppress-backtrace" ".*"))))
 
 (defsubst motion-bundler-p ()
   ;; default-directory should be top directory of project.
