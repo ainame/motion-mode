@@ -43,6 +43,7 @@
   (format "ruby %s" (concat (file-name-directory load-file-name) "bin/code_converter.rb")))
 (defvar motion-get-rake-task-history nil)
 (defvar motion-rake-task-list-cache nil)
+(defvar motion-rake-task-buffer " *motion rake tasks*")
 
 (defun motion-project-root ()
   (let ((root (locate-dominating-file default-directory "Rakefile")))
@@ -66,7 +67,7 @@
   "motion-mode is provide a iOS SDK's dictonary for auto-complete-mode"
   (progn
     ;; asynchronous caching rake tasks
-    (motion-get-rake-tasks (motion-bundler-p))
+    (motion-get-rake-tasks (motion-bundler-p) t)
     (when (eq motion-flymake t)
       (motion-flymake-init))))
 
@@ -76,25 +77,42 @@
   (when (and (eq major-mode 'ruby-mode) (motion-project-p))
     (motion-mode)))
 
-(defun motion-get-rake-tasks (use-bundler)
-  (if (equal motion-rake-task-list-cache nil)
-      (progn
-	(setq motion-rake-task-list-cache (motion-get-rake-tasks-async use-bundler))
-	motion-rake-task-list-cache)
+(defun motion-get-rake-tasks (use-bundler &optional async-p)
+  (if (not motion-rake-task-list-cache)
+      (setq motion-rake-task-list-cache
+            (if async-p
+                (motion-get-rake-tasks-async use-bundler)
+              (motion-get-rake-tasks-synchronous use-bundler)))
     motion-rake-task-list-cache))
 
+(defun motion-collect-rake-tasks ()
+  (with-current-buffer motion-rake-task-buffer
+    (goto-char (point-min))
+    (let ((tasks nil))
+      (while (re-search-forward "^rake \\(\\S-+\\)" nil t)
+        (push (match-string 1) tasks))
+      (erase-buffer)
+      (reverse tasks))))
+
+(defun motion-collect-rake-task-sentinel (proc state)
+  (when (eq (process-status proc) 'exit)
+    (setq motion-rake-task-list-cache (motion-collect-rake-tasks))))
+
 (defun motion-get-rake-tasks-async (use-bundler)
-  (with-temp-buffer
-    (let* ((rake (if use-bundler "bundle exec rake" "rake"))
-           (cmd (format "%s --tasks&" rake))
-           (ret (call-process-shell-command cmd nil t)))
-      (unless (zerop ret)
-        (error "Failed: %s. Please check Rakefile" cmd))
-      (goto-char (point-min))
-      (let ((tasks nil))
-        (while (re-search-forward "^rake \\(\\S-+\\)" nil t)
-          (push (match-string 1) tasks))
-        (reverse tasks)))))
+  (let* ((buf (get-buffer-create motion-rake-task-buffer))
+         (rake (if use-bundler "bundle exec rake" "rake"))
+         (cmd (format "%s --tasks" rake))
+         (proc (start-process-shell-command "rake-tasks" buf cmd)))
+    (set-process-sentinel proc 'motion-collect-rake-task-sentinel)))
+
+(defun motion-get-rake-tasks-synchronous (use-bundler)
+  (let* ((rake (if use-bundler "bundle exec rake" "rake"))
+         (cmd (format "%s --tasks" rake))
+         (buf (get-buffer-create motion-rake-task-buffer))
+         (ret (call-process-shell-command cmd nil buf)))
+    (unless (zerop ret)
+      (error "Failed: %s. Please check Rakefile" cmd))
+    (motion-collect-rake-tasks)))
 
 (defun motion-get-rake-sub-command (use-bundler)
   (if current-prefix-arg
