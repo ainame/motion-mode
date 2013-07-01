@@ -67,7 +67,8 @@
   "motion-mode is provide a iOS SDK's dictonary for auto-complete-mode"
   (progn
     ;; asynchronous caching rake tasks
-    (motion-get-rake-tasks (motion-bundler-p) t)
+    (let ((default-directory (motion-project-root)))
+      (motion-get-rake-tasks (motion-bundler-p) t))
     (when (eq motion-flymake t)
       (motion-flymake-init))))
 
@@ -79,10 +80,9 @@
 
 (defun motion-get-rake-tasks (use-bundler &optional async-p)
   (if (not motion-rake-task-list-cache)
-      (setq motion-rake-task-list-cache
-            (if async-p
-                (motion-get-rake-tasks-async use-bundler)
-              (motion-get-rake-tasks-synchronous use-bundler)))
+      (if async-p
+          (motion-get-rake-tasks-async use-bundler)
+        (motion-get-rake-tasks-synchronous use-bundler))
     motion-rake-task-list-cache))
 
 (defun motion-collect-rake-tasks ()
@@ -112,7 +112,7 @@
          (ret (call-process-shell-command cmd nil buf)))
     (unless (zerop ret)
       (error "Failed: %s. Please check Rakefile" cmd))
-    (motion-collect-rake-tasks)))
+    (setq motion-rake-task-list-cache (motion-collect-rake-tasks))))
 
 (defun motion-get-rake-sub-command (use-bundler)
   (if current-prefix-arg
