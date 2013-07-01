@@ -67,7 +67,8 @@
   "motion-mode is provide a iOS SDK's dictonary for auto-complete-mode"
   (progn
     ;; asynchronous caching rake tasks
-    (motion-get-rake-tasks (motion-bundler-p) t)
+    (let ((default-directory (motion-project-root)))
+      (motion-get-rake-tasks (motion-bundler-p) t))
     (when (eq motion-flymake t)
       (motion-flymake-init))))
 
