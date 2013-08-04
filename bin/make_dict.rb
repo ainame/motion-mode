@@ -34,10 +34,10 @@ def extract_symbols(definition)
 end
 
 dict = {}
-ARGV.each do|f|  
+ARGV.each do|f|
   basename = File.basename(File.expand_path(f), ".h")
   puts "Processing #{basename}.h"
-  
+
   open(File.expand_path(f), 'r').each do |line|
     function_match = $function.match(
       line.force_encoding("UTF-8").encode(
@@ -65,7 +65,7 @@ ARGV.each do|f|
       end
     end
   end
-end   
+end
 
 File.open('motion-mode', 'w+') do |f|
   dict.keys.each do |key|
