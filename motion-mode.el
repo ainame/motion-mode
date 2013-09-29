@@ -183,7 +183,7 @@
   (interactive)
   (let ((keyword (thing-at-point 'word)))
     (princ keyword)
-    (shell-command (format "open dash://rubymotion:%s" keyword))))
+    (shell-command (format "open dash://%s" keyword))))
 
 ;;;###autoload
 (defun motion-convert-code-region (start end)
