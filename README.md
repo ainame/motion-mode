@@ -65,9 +65,13 @@ You can set key binding of following commands. The motion-mode dosen't provide d
 ### Setting Example
 ```elisp
 (define-key motion-mode-map (kbd "C-c C-c") 'motion-execute-rake)
-(define-key motion-mode-map (kbd "C-c C-d") 'motion-dash-at-point)
+(define-key motion-mode-map (kbd "C-c C-d") (lambda () (interactive) (motion-execute-rake-command "device")))
+(define-key motion-mode-map (kbd "C-c C-o") 'motion-dash-at-point)
 (define-key motion-mode-map (kbd "C-c C-p") 'motion-convert-code-region)
 ```
+## Function
+* motion-execute-rake-command TASK
+  * execute rake task of TASK
 
 ## Variable
 * motion-flymake (default is t)
