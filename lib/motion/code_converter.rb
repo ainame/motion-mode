@@ -60,6 +60,7 @@ module Motion
       mark_spaces_in_string
       convert_blocks
       convert_square_brackets_expression
+      convert_yes_no_to_true_false
       remove_semicolon_at_the_end
       remove_autorelease
       remove_type_declaration
@@ -91,10 +92,19 @@ module Motion
       self
     end
 
+    def convert_yes_no_to_true_false
+      @s.gsub!(/([^a-zA-Z0-9]*)YES([^a-zA-Z0-9]*)/) do |match|
+        "#{$1}true#{$2}"
+      end
+      @s.gsub!(/([^a-zA-Z0-9]*)NO([^a-zA-Z0-9]*)/) do |match|
+        "#{$1}false#{$2}"
+      end
+    end
+
     def convert_square_brackets_expression
       max_attempt = 10 # Avoid infinite loops
       square_pattern = Regexp.compile(/\[([^\[\]]+?)\s+([^\[\]]+?)\]/)
-      
+
       max_attempt.times do
         if square_pattern.match(@s)
           @s.gsub!(square_pattern) do|match|
@@ -141,6 +151,8 @@ module Motion
       @s.gsub!(/__SPACE__/, ' ')
       @s.gsub!(/__COMMA__/, ',')
       @s.gsub!(/__SEMICOLON__/, ':')
+      @s.gsub!(/__YES__/, 'true')
+      @s.gsub!(/__NOT__/, 'false')
       self
     end
   end
