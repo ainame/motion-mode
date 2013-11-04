@@ -8,7 +8,7 @@
 ;; Package-Requires: ((flymake-easy "0.7") (flymake-cursor "1.0.2"))
 
 ;; Copyright (C) 2013 by Satoshi Namai <s.namai.2012 at gmail.com>
-;; 
+;;
 ;; Permission is hereby granted, free of charge, to any person
 ;; obtaining a copy of this software and associated documentation
 ;; files, to deal in the Software without restriction, including
@@ -16,10 +16,10 @@
 ;; distribute, sublicense, and/or sell copies of the Software, and to
 ;; permit persons to whom the Software is furnished to do so, subject
 ;; to the following conditions:
-;; 
+;;
 ;; The above copyright notice and this permission notice shall be
 ;; included in all copies or substantial portions of the Software.
-;; 
+;;
 ;; THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 ;; EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 ;; MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -130,23 +130,26 @@
   ;; default-directory should be top directory of project.
   (file-exists-p (concat default-directory "Gemfile.lock")))
 
-(defun motion-execute-rake-command ()
+(defun motion-execute-rake-command-execution (task)
   (let* ((use-bundler (motion-bundler-p))
          (buf (get-buffer-create (concat "*" motion-execute-rake-buffer "*")))
-         (sub-command (motion-get-rake-sub-command use-bundler))
+         (sub-command (or task (motion-get-rake-sub-command use-bundler)))
          (params (motion-construct-rake-command use-bundler sub-command)))
     (message "%s" (mapconcat (lambda (p) (if p (concat p " ") "")) params ""))
     (apply 'make-comint motion-execute-rake-buffer params)
     (pop-to-buffer buf)))
 
-;;;###autoload
-(defun motion-execute-rake ()
-  (interactive)
+(defun motion-execute-rake-command (task)
   (let ((root (motion-project-root)))
     (if (not root)
         (message "Here is not Ruby Motion Project")
       (let ((default-directory root))
-	(motion-execute-rake-command)))))
+	(motion-execute-rake-command-execution task)))))
+
+;;;###autoload
+(defun motion-execute-rake ()
+  (interactive)
+  (motion-execute-rake-command nil))
 
 (defun motion-flymake-init ()
   (progn
@@ -163,7 +166,7 @@
     (defun flymake-motion-command (filename)
       "Construct a command that flymake can use to check ruby-motion source."
       (list flymake-motion-executable "-w" "-c" filename))
-    
+
     (defun flymake-motion-load ()
       "Configure flymake mode to check the current buffer's macruby syntax."
       (interactive)
