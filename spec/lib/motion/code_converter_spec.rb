@@ -64,6 +64,36 @@ S
     end
   end
 
+  describe "#convert_method" do
+    it 'method without args' do
+      source   = '- (void)application {'
+      expected = 'def application {'
+      c = Motion::CodeConverter.new(source)
+      c.convert_methods.s.should eq(expected)
+    end
+
+    it 'method with one arg' do
+      source   = '- (BOOL)application:(UIApplication *)application {'
+      expected = 'def application(application) {'
+      c = Motion::CodeConverter.new(source)
+      c.convert_methods.s.should eq(expected)
+    end
+
+    it 'method with two args' do
+      source   = '- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {'
+      expected = 'def application(application, handleOpenURL: url) {'
+      c = Motion::CodeConverter.new(source)
+      c.convert_methods.s.should eq(expected)
+    end
+
+    it 'method with three args' do
+      source   = '- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url sender:(id) sender {'
+      expected = 'def application(application, handleOpenURL: url, sender: sender) {'
+      c = Motion::CodeConverter.new(source)
+      c.convert_methods.s.should eq(expected)
+    end
+  end
+
   describe "#convert_blocks" do
     it 'block without args' do
       source   = <<S.chomp

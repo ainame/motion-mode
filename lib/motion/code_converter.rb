@@ -33,6 +33,11 @@ module Motion
         replaced_args.size > 1 ? '|' + replaced_args.join(',') + '|' : replaced_args[0]
       end
 
+      def convert_method_args(args)
+        return '' unless args
+        args.gsub(/\s+(\w+):\s*\([^\)]+\)\s*(\w+)/, ', \1: \2')
+      end
+
       def convert_args(match_obj)
         # Consider args with colon followed by spaces
         following_args = match_obj[2].gsub(/([^:]+)(\s+)(\S+):/, '\1,\3:')
@@ -44,6 +49,15 @@ module Motion
       def convert_block_with_args(match_obj)
         args = self.convert_block_args(match_obj[1])
         sprintf("->%s{%s}", args, match_obj[2])
+      end
+
+      def convert_method_with_args(match_obj)
+        args = self.convert_method_args(match_obj[4])
+        if match_obj[2].nil?
+          sprintf("def %s {", match_obj[1])
+        else
+          sprintf("def %s(%s%s) {", match_obj[1], match_obj[3], args)
+        end
       end
 
       def ruby_style_code(match_obj)
@@ -58,6 +72,7 @@ module Motion
       multilines_to_one_line
       replace_nsstring
       mark_spaces_in_string
+      convert_methods
       convert_blocks
       convert_square_brackets_expression
       convert_yes_no_to_true_false
@@ -81,6 +96,13 @@ module Motion
     def mark_spaces_in_string
       @s.gsub!(/("(?:[^\\"]|\\.)*")/) do |match|
         self.class.characters_to_mark(Regexp.last_match)
+      end
+      self
+    end
+
+    def convert_methods
+      @s.gsub!(/-\s*\([^\)]+\)(\w+)(:\s*\([^\)]+\)\s*(\w+))?((\s+\w+:\s*\([^\)]+\)\s*\w+)*)\s*\{/) do |match|
+        self.class.convert_method_with_args(Regexp.last_match)
       end
       self
     end
