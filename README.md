@@ -40,7 +40,7 @@ and then "M-x package-install".
 
 ``` sh
 $ cd ~/.emacs.d/path/to/motion-mode
-$ find /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/System/Library/Frameworks -name "*.h" | xargs ruby bin/make_dict.rb
+$ find /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/System/Library/Frameworks -name "*.h" | xargs ruby bin/make_dict.rb
 $ cp ./motion-mode ~/.emacs.d/ac-dict
 $ emacs ~/.emacs.d/init.el # add following setting
 (add-to-list 'load-path "~/.emacs.d/elisp/motion-mode")
