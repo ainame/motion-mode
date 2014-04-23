@@ -178,7 +178,7 @@ S
     end
   end
 
-  describe "remove_type_declaration" do
+  describe "#remove_type_declaration" do
     it 'remove type declaration' do
       source   = 'UIWindow* aWindow = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease]'
       expected = 'aWindow = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease]'
