@@ -79,6 +79,7 @@ module Motion
       remove_semicolon_at_the_end
       remove_autorelease
       remove_type_declaration
+      remove_float_declaration
       tidy_up
       restore_characters_in_string
       @s
@@ -156,6 +157,11 @@ module Motion
 
     def remove_type_declaration
       @s.gsub!(/^(\s*)[a-zA-Z_0-9]+\s*\*\s*([^=]+)=/, '\1\2=')
+      self
+    end
+
+    def remove_float_declaration
+      @s.gsub!(/(\d+\.\d)(f)/, '\1')
       self
     end
 

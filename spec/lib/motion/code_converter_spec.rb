@@ -194,6 +194,24 @@ S
     end
   end
 
+  describe "#remove_float_declaration" do
+    before { @converter = Motion::CodeConverter.new(source) }
+
+    context "in unconverted Objective C statement" do
+      let(:source) { "UIColor * color = [UIColor colorWithRed:255/255.0f green:156/255.0f blue:79/255.0f alpha:1.0f];" }
+      let(:expected) { "UIColor * color = [UIColor colorWithRed:255/255.0 green:156/255.0 blue:79/255.0 alpha:1.0];" }
+
+      it { @converter.remove_float_declaration.s.should eq(expected) }
+    end
+
+    context "in converted statement" do
+      let(:source) { "color = UIColor.colorWithRed(255/255.0f, green:204/255.0f, blue:0/255.0f, alpha:1.0f)"}
+      let(:expected) { "color = UIColor.colorWithRed(255/255.0, green:204/255.0, blue:0/255.0, alpha:1.0)" }
+
+      it { @converter.remove_float_declaration.s.should eq(expected) }
+    end
+  end
+
   describe "#tidy_up" do
     it 'tidy args' do
       source   = "UITabBarItem.alloc.initWithTabBarSystemItem(UITabBarSystemItemBookmarks,tag:0)"
