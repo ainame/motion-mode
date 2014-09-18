@@ -45,6 +45,9 @@
 (defvar motion-rake-task-list-cache nil)
 (defvar motion-rake-task-buffer " *motion rake tasks*")
 
+(defun motion-execute-rake-buffer-name ()
+  (concat "*" motion-execute-rake-buffer "*"))
+
 (defun motion-project-root ()
   (let ((root (locate-dominating-file default-directory "Rakefile")))
     (when root
@@ -132,7 +135,7 @@
 
 (defun motion-execute-rake-command-execution (task)
   (let* ((use-bundler (motion-bundler-p))
-         (buf (get-buffer-create (concat "*" motion-execute-rake-buffer "*")))
+         (buf (get-buffer-create (motion-execute-rake-buffer-name)))
          (sub-command (or task (motion-get-rake-sub-command use-bundler)))
          (params (motion-construct-rake-command use-bundler sub-command)))
     (message "%s" (mapconcat (lambda (p) (if p (concat p " ") "")) params ""))
@@ -149,6 +152,16 @@
 ;;;###autoload
 (defun motion-execute-rake ()
   (interactive)
+  (motion-execute-rake-command nil))
+
+(defun motion-reload-app ()
+  (interactive)
+  (let ((buf (motion-execute-rake-buffer-name)))
+    (when (get-buffer buf)
+      (progn
+        (with-current-buffer (get-buffer (motion-execute-rake-buffer-name))
+          (set-process-query-on-exit-flag (get-buffer-process (current-buffer)) nil))
+        (kill-buffer buf))))
   (motion-execute-rake-command nil))
 
 (defun motion-flymake-init ()
